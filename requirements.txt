@@ -1,4 +1,4 @@
-tensorflow
+tensorflow[and-cuda]
 tensorflow-datasets
 matplotlib
 tensorflow_probability
