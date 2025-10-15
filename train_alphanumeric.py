@@ -107,9 +107,13 @@ def load_emnist_data() -> Tuple[Tuple[np.ndarray, np.ndarray], Tuple[np.ndarray,
     x_letters_train, y_letters_train = extract_data(ds_letters_train)
     x_letters_test, y_letters_test = extract_data(ds_letters_test)
     
-    # Adjust letter labels to start from 10 (after digits 0-9)
-    y_letters_train += 10
-    y_letters_test += 10
+    # EMNIST letters labels start from 1 (A=1, B=2, ..., Z=26)
+    # Adjust to start from 10 (A=10, B=11, ..., Z=35) to follow digits 0-9
+    y_letters_train = y_letters_train - 1 + 10  # Convert 1-26 to 10-35
+    y_letters_test = y_letters_test - 1 + 10
+    
+    print(f"Debug: Digits labels range: {y_digits_train.min()}-{y_digits_train.max()}")
+    print(f"Debug: Letters labels range: {y_letters_train.min()}-{y_letters_train.max()}")
     
     # Combine datasets
     print("Combining datasets...")
@@ -126,6 +130,15 @@ def load_emnist_data() -> Tuple[Tuple[np.ndarray, np.ndarray], Tuple[np.ndarray,
     test_indices = np.random.permutation(len(x_test))
     x_test = x_test[test_indices]
     y_test = y_test[test_indices]
+    
+    # Validate label ranges
+    print(f"Final label ranges:")
+    print(f"   Training labels: {y_train.min()}-{y_train.max()}")
+    print(f"   Test labels: {y_test.min()}-{y_test.max()}")
+    
+    # Ensure all labels are within valid range [0, 35]
+    assert y_train.min() >= 0 and y_train.max() <= 35, f"Invalid training labels: {y_train.min()}-{y_train.max()}"
+    assert y_test.min() >= 0 and y_test.max() <= 35, f"Invalid test labels: {y_test.min()}-{y_test.max()}"
     
     print(f"✅ Combined dataset loaded:")
     print(f"   Training samples: {len(x_train):,}")
@@ -256,7 +269,7 @@ def create_alphanumeric_model(input_shape: Tuple[int, int, int], num_classes: in
     model.compile(
         optimizer=optimizers.Adam(learning_rate=0.001),
         loss='categorical_crossentropy',
-        metrics=['accuracy', 'top_5_accuracy']
+        metrics=['accuracy']  # Removed top_5_accuracy for compatibility
     )
     
     print("✅ Model created and compiled successfully!")
@@ -331,11 +344,10 @@ def evaluate_model(model: keras.Model, x_test: np.ndarray, y_test: np.ndarray,
     print("📊 Evaluating model performance...")
     
     # Evaluate on test set
-    test_loss, test_accuracy, test_top5 = model.evaluate(x_test, y_test, verbose=0)
+    test_loss, test_accuracy = model.evaluate(x_test, y_test, verbose=0)
     
     print(f"✅ Final Test Results:")
     print(f"   Test Accuracy: {test_accuracy:.4f} ({test_accuracy*100:.2f}%)")
-    print(f"   Test Top-5 Accuracy: {test_top5:.4f} ({test_top5*100:.2f}%)")
     print(f"   Test Loss: {test_loss:.4f}")
     
     # Make predictions for detailed analysis
