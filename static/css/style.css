@@ -40,8 +40,63 @@ h1 {
 .subtitle {
 	font-size: 1.1rem;
 	color: #666;
-	margin-bottom: 2rem;
+	margin-bottom: 1rem;
 	font-weight: 300;
+}
+
+.mode-selector {
+	margin: 2rem 0;
+	padding: 1.5rem;
+	background: rgba(102, 126, 234, 0.1);
+	border-radius: 15px;
+	border: 1px solid rgba(102, 126, 234, 0.2);
+}
+
+.mode-selector h3 {
+	margin: 0 0 1rem 0;
+	color: #4a5568;
+	font-size: 1.2rem;
+	font-weight: 600;
+}
+
+.mode-buttons {
+	display: flex;
+	gap: 1rem;
+	justify-content: center;
+	flex-wrap: wrap;
+}
+
+.mode-btn {
+	background: rgba(255, 255, 255, 0.8);
+	color: #4a5568;
+	border: 2px solid rgba(102, 126, 234, 0.3);
+	padding: 12px 20px;
+	border-radius: 25px;
+	font-size: 0.9rem;
+	font-weight: 600;
+	cursor: pointer;
+	transition: all 0.3s ease;
+	box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+	min-width: 180px;
+}
+
+.mode-btn:hover {
+	transform: translateY(-2px);
+	box-shadow: 0 4px 15px rgba(102, 126, 234, 0.2);
+	border-color: rgba(102, 126, 234, 0.5);
+}
+
+.mode-btn.active {
+	background: linear-gradient(135deg, #667eea, #764ba2);
+	color: white;
+	border-color: #667eea;
+	box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+}
+
+.mode-btn.disabled {
+	opacity: 0.5;
+	cursor: not-allowed;
+	transform: none !important;
 }
 
 .canvas-container {
@@ -134,6 +189,44 @@ button:active {
 	box-shadow: 0 5px 15px rgba(252, 182, 159, 0.2);
 }
 
+.top-predictions {
+	margin-top: 1.5rem;
+	padding: 1.5rem;
+	background: rgba(255, 255, 255, 0.8);
+	border-radius: 15px;
+	border: 1px solid rgba(102, 126, 234, 0.2);
+}
+
+.top-predictions h4 {
+	margin: 0 0 1rem 0;
+	color: #4a5568;
+	font-size: 1.1rem;
+	text-align: center;
+}
+
+.prediction-item {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 0.5rem 1rem;
+	margin: 0.5rem 0;
+	background: rgba(102, 126, 234, 0.1);
+	border-radius: 10px;
+	border-left: 4px solid #667eea;
+}
+
+.prediction-character {
+	font-size: 1.5rem;
+	font-weight: bold;
+	color: #667eea;
+}
+
+.prediction-confidence {
+	font-size: 1rem;
+	color: #4a5568;
+	font-weight: 600;
+}
+
 /* Responsive design */
 @media (max-width: 600px) {
 	.container {
@@ -158,6 +251,16 @@ button:active {
 	button {
 		width: 100%;
 		max-width: 200px;
+	}
+	
+	.mode-buttons {
+		flex-direction: column;
+		align-items: center;
+	}
+	
+	.mode-btn {
+		width: 100%;
+		max-width: 250px;
 	}
 }
 

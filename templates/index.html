@@ -3,24 +3,45 @@
 	<head>
 		<meta charset="UTF-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<title>AI Digit Recognition</title>
+		<title>AI Character Recognition</title>
 		<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 	</head>
 	<body>
 		<div class="container">
-			<h1>AI Digit Recognition</h1>
-			<p class="subtitle">Draw any digit (0-9) and let AI predict what you wrote!</p>
+			<h1>🤖 AI Character Recognition</h1>
+			<p class="subtitle" id="subtitle">Draw any character and let AI predict what you wrote!</p>
+			
+			<div class="mode-selector">
+				<h3>Recognition Mode:</h3>
+				<div class="mode-buttons">
+					<button id="digits-mode" class="mode-btn active" onclick="switchMode('digits')">
+						🔢 Digits Only (0-9)
+					</button>
+					<button id="alphanumeric-mode" class="mode-btn" onclick="switchMode('alphanumeric')">
+						🔤 Digits + Letters (0-9, A-Z)
+					</button>
+				</div>
+			</div>
+			
 			<div class="instructions">
 				💡 <strong>Tip:</strong> Draw clearly in the center of the canvas for best results
 			</div>
+			
 			<div class="canvas-container">
 				<canvas id="canvas" width="280" height="280"></canvas>
 			</div>
+			
 			<div class="button-container">
-				<button onclick="predictDigit()">Predict</button>
-				<button class="clear-btn" onclick="clearCanvas()">Clear</button>
+				<button onclick="predictCharacter()">🔮 Predict</button>
+				<button class="clear-btn" onclick="clearCanvas()">🗑️ Clear</button>
 			</div>
+			
 			<div id="result"></div>
+			
+			<div class="top-predictions" id="top-predictions" style="display: none;">
+				<h4>Top 3 Predictions:</h4>
+				<div id="predictions-list"></div>
+			</div>
 		</div>
 		<script src="{{ url_for('static', filename='js/script.js') }}"></script>
 	</body>

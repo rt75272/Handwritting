@@ -4,15 +4,19 @@
 # application. Install with: pip install -r requirements.txt
 
 # Web framework.
-Flask==3.0.0
+Flask
 
 # Machine learning and neural networks.
-tensorflow==2.14.0
-numpy==1.24.3
+tensorflow
+tensorflow-datasets
+numpy
 
 # Image processing.
-Pillow==10.0.1
-scipy==1.11.4
+Pillow
+scipy
+
+# Data visualization (optional, for debugging and analysis).
+matplotlib
 
 # Production web server (optional, for deployment).
-gunicorn==21.2.0
+gunicorn
