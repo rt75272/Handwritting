@@ -1,2 +1,48 @@
-handwritting/
-Handwriting_AG_Dataset/
+# MNIST Digit Recognition - Git Ignore File.
+# 
+# This file specifies which files and directories should be ignored by Git
+# version control to keep the repository clean and avoid committing sensitive
+# or auto-generated files.
+
+# Python cache and compiled files.
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Virtual environment.
+digits/
+venv/
+env/
+.env
+
+# Model files (large binary files).
+*.h5
+*.pkl
+*.model
+
+# Debug and temporary files.
+debug_*.png
+debug_*.jpg
+*.tmp
+*.log
+
+# IDE and editor files.
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS generated files.
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Backup files (from our cleanup).
+*_old.*
+*_backup.*

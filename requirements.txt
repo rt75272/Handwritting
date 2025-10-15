@@ -1,5 +1,18 @@
-tensorflow[and-cuda]
-tensorflow-datasets
-matplotlib
-tensorflow_probability
-tf-keras
+# MNIST Digit Recognition Web Application Dependencies.
+# 
+# This file contains all Python packages required to run the digit recognition
+# application. Install with: pip install -r requirements.txt
+
+# Web framework.
+Flask==3.0.0
+
+# Machine learning and neural networks.
+tensorflow==2.14.0
+numpy==1.24.3
+
+# Image processing.
+Pillow==10.0.1
+scipy==1.11.4
+
+# Production web server (optional, for deployment).
+gunicorn==21.2.0
