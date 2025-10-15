@@ -1,28 +1,18 @@
 # Production requirements for Render deployment
-# Enhanced Character Recognition Web Application
+# Minimal set to avoid compilation issues
 
 # Web Framework
 Flask==3.0.3
 gunicorn==22.0.0
 
-# Machine Learning Core
-tensorflow
-tensorflow-cpu
+# Machine Learning - CPU optimized
+tensorflow-cpu==2.16.2
 
-# Image Processing
+# Image Processing - using older stable versions with wheels
 Pillow==10.4.0
-numpy==1.26.4
-scipy==1.13.1
+numpy==1.24.4
+scipy==1.11.4
 
-# HTTP and Request Handling
+# Essential utilities
 requests==2.32.3
-
-# Logging and Monitoring
-werkzeug==3.0.3
-
-# Data Handling
-h5py==3.11.0
-
-# Additional utilities
-six==1.16.0
-typing_extensions==4.12.2
+h5py==3.10.0
