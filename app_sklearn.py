@@ -91,42 +91,40 @@ def enhanced_preprocess(image_data: str) -> Optional[np.ndarray]:
     7. Flattens to 784-element vector
     """
     try:
-        # Remove data URL prefix if present
+        # Remove data URL prefix if present.
         if ',' in image_data:
             image_data = image_data.split(',')[1]
-        # Decode base64 image data
+        # Decode base64 image data.
         image_bytes = base64.b64decode(image_data)
         image = Image.open(io.BytesIO(image_bytes))
-        # Convert to grayscale if needed
+        # Convert to grayscale if needed.
         if image.mode != 'L':
             image = image.convert('L')
-        # Find the bounding box of drawn content to crop efficiently
+        # Find the bounding box of drawn content to crop efficiently.
         bbox = image.getbbox()
         if bbox:
             left, top, right, bottom = bbox
             width = right - left
             height = bottom - top
-            
-            # Add padding (20% of larger dimension) to preserve aspect ratio
+            # Add padding (20% of larger dimension) to preserve aspect ratio.
             padding = int(0.2 * max(width, height))
             left = max(0, left - padding)
             top = max(0, top - padding)
             right = min(image.width, right + padding)
             bottom = min(image.height, bottom + padding)
             image = image.crop((left, top, right, bottom))
-        # Resize to MNIST standard 28x28 pixels
+        # Resize to MNIST standard 28x28 pixels.
         image = image.resize((28, 28), Image.Resampling.LANCZOS)
-        # Convert to numpy array for mathematical operations
+        # Convert to numpy array for mathematical operations.
         img_array = np.array(image, dtype=np.float32)
-        # Invert colors if needed (MNIST expects white digits on black background)
+        # Invert colors if needed (MNIST expects white digits on black background).
         if np.mean(img_array) > 127:
             img_array = 255 - img_array
-        # Normalize pixel values to [0, 1] range
+        # Normalize pixel values to [0, 1] range.
         img_array = img_array / 255.0
-        # Flatten to 784-element vector for scikit-learn input
+        # Flatten to 784-element vector for scikit-learn input.
         img_array = img_array.reshape(1, 784)
         return img_array
-        
     except Exception as e:
         logger.error(f"❌ Preprocessing failed: {e}")
         return None
@@ -158,23 +156,23 @@ def predict():
         }
     """
     try:
-        # Verify model is loaded
+        # Verify model is loaded.
         if digit_model is None:
             logger.error("❌ No trained model available")
             return jsonify({'error': 'Model not loaded'}), 500
-        # Extract image data from request
+        # Extract image data from request.
         data = request.json
         image_data = data.get('image')
         if not image_data:
             return jsonify({'error': 'No image data provided'}), 400
-        # Preprocess the image for model input
+        # Preprocess the image for model input.
         processed_image = enhanced_preprocess(image_data)
         if processed_image is None:
             return jsonify({'error': 'Failed to process image'}), 400
-        # Apply data scaling if scaler is available
+        # Apply data scaling if scaler is available.
         if scaler is not None:
             processed_image = scaler.transform(processed_image)
-        # Make prediction using the trained model
+        # Make prediction using the trained model.
         predicted_digit = int(digit_model.predict(processed_image)[0])
         probabilities = digit_model.predict_proba(processed_image)[0]
         confidence = float(np.max(probabilities))
@@ -213,7 +211,7 @@ def initialize_models():
     global digit_model, scaler
     try:
         logger.info("🚀 Initializing ultra-lightweight digit recognition...")
-        # Load the sklearn model and scaler from disk
+        # Load the sklearn model and scaler from disk.
         digit_model, scaler = load_sklearn_model()
         if digit_model is not None:
             logger.info("✅ Scikit-learn model loaded successfully")
@@ -224,14 +222,14 @@ def initialize_models():
         logger.error(f"🔍 Traceback: {traceback.format_exc()}")
     logger.info("✅ Initialization complete")
 
-# Initialize models at module level for gunicorn compatibility
-# (gunicorn doesn't execute the if __name__ == '__main__' block)
+# Initialize models at module level for gunicorn compatibility.
+# (gunicorn doesn't execute the if __name__ == '__main__' block).
 logger.info("🚀 Starting ultra-lightweight digit recognition app")
 logger.info("📝 Note: Using scikit-learn for minimal deployment")
 initialize_models()
 
 if __name__ == '__main__':
-    # Local development server configuration
+    # Local development server configuration.
     port = int(os.environ.get('PORT', 5000))
     logger.info(f"🎯 Starting local development server on port {port}")
     app.run(host='0.0.0.0', port=port, debug=False)

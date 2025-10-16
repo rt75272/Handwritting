@@ -69,20 +69,16 @@ def train_enhanced_sklearn_model():
     # Reshape from 28x28 images to 784-element vectors and normalize to [0,1].
     x_train = x_train.reshape(-1, 784) / 255.0
     x_test = x_test.reshape(-1, 784) / 255.0
-    
     print(f"📊 Original training data shape: {x_train.shape}")
     print(f"📊 Test data shape: {x_test.shape}")
-    
-    # Enhance training data
+    # Enhance training data.
     x_train_enhanced, y_train_enhanced = enhance_data(x_train, y_train)
-    
-    # Scale the data
+    # Scale the data.
     print("🔄 Scaling data...")
     scaler = StandardScaler()
     x_train_scaled = scaler.fit_transform(x_train_enhanced)
     x_test_scaled = scaler.transform(x_test)
-    
-    # Define enhanced models with better hyperparameters
+    # Define enhanced models with better hyperparameters.
     models = {
         'Enhanced Neural Network': MLPClassifier(
             hidden_layer_sizes=(256, 128, 64),
@@ -115,12 +111,10 @@ def train_enhanced_sklearn_model():
             random_state=42
         )
     }
-    
     trained_models = {}
     best_model = None
     best_accuracy = 0
     best_name = ""
-    
     for name, model in models.items():
         print(f"\n🔄 Training {name}...")
         
@@ -130,20 +124,16 @@ def train_enhanced_sklearn_model():
             model.fit(x_train_scaled[:subset_size], y_train_enhanced[:subset_size])
         else:
             model.fit(x_train_scaled, y_train_enhanced)
-        
-        # Test accuracy
+        # Test accuracy.
         y_pred = model.predict(x_test_scaled)
         accuracy = accuracy_score(y_test, y_pred)
         trained_models[name] = model
-        
         print(f"✅ {name} accuracy: {accuracy:.4f}")
-        
         if accuracy > best_accuracy:
             best_accuracy = accuracy
             best_model = model
             best_name = name
-    
-    # Create ensemble model for even better accuracy
+    # Create ensemble model for even better accuracy.
     print(f"\n🔄 Creating ensemble model...")
     ensemble = VotingClassifier(
         estimators=[
@@ -152,12 +142,10 @@ def train_enhanced_sklearn_model():
         ],
         voting='soft'
     )
-    
-    # Train ensemble (use smaller subset to avoid memory issues)
+    # Train ensemble (use smaller subset to avoid memory issues).
     subset_size = 30000
     ensemble.fit(x_train_scaled[:subset_size], y_train_enhanced[:subset_size])
-    
-    # Test ensemble
+    # Test ensemble.
     ensemble_pred = ensemble.predict(x_test_scaled)
     ensemble_accuracy = accuracy_score(y_test, ensemble_pred)
     print(f"✅ Ensemble accuracy: {ensemble_accuracy:.4f}")
@@ -169,16 +157,13 @@ def train_enhanced_sklearn_model():
         best_name = "Ensemble"
     
     print(f"\n🏆 Best model: {best_name} with accuracy {best_accuracy:.4f}")
-    
-    # Save the best model and scaler
+    # Save the best model and scaler.
     print("💾 Saving enhanced model and scaler...")
     with open('sklearn_digit_model.pkl', 'wb') as f:
         pickle.dump(best_model, f)
-    
     with open('sklearn_scaler.pkl', 'wb') as f:
         pickle.dump(scaler, f)
-    
-    # Save enhanced metadata
+    # Save enhanced metadata.
     metadata = {
         'model_type': best_name,
         'test_accuracy': float(best_accuracy),
@@ -188,37 +173,30 @@ def train_enhanced_sklearn_model():
         'data_augmentation': True,
         'training_samples': len(x_train_enhanced)
     }
-    
     with open('sklearn_metadata.json', 'w') as f:
         import json
         json.dump(metadata, f, indent=2)
-    
-    # Detailed classification report
+    # Detailed classification report.
     if best_name != "Ensemble":
         y_pred_best = best_model.predict(x_test_scaled)
     else:
         y_pred_best = ensemble_pred
-    
     print(f"\n📊 Detailed Classification Report for {best_name}:")
     print(classification_report(y_test, y_pred_best))
-    
-    # Check file sizes
+    # Check file sizes.
     import os
     model_size = os.path.getsize('sklearn_digit_model.pkl') / 1024
     scaler_size = os.path.getsize('sklearn_scaler.pkl') / 1024
-    
     print(f"\n📊 Enhanced model size: {model_size:.1f} KB")
     print(f"📊 Scaler size: {scaler_size:.1f} KB")
     print(f"📊 Total size: {(model_size + scaler_size):.1f} KB")
-    
-    # Per-digit accuracy analysis
+    # Per-digit accuracy analysis.
     print(f"\n🎯 Per-digit accuracy analysis:")
     for digit in range(10):
         digit_mask = y_test == digit
         if np.sum(digit_mask) > 0:
             digit_accuracy = accuracy_score(y_test[digit_mask], y_pred_best[digit_mask])
             print(f"   Digit {digit}: {digit_accuracy:.3f} ({np.sum(digit_mask)} samples)")
-    
     print("✅ Enhanced scikit-learn model training complete!")
     print(f"🎯 Final accuracy: {best_accuracy:.4f} ({best_accuracy*100:.2f}%)")
     return best_model, scaler, best_accuracy

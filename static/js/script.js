@@ -113,8 +113,7 @@ async function predictDigit() {
         console.log(`Captured canvas image, data URL length: ${dataURL.length}`);
         // Send prediction request to server with timeout.
         const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout
-        
+        const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout.
         const response = await fetch("/predict", {
             method: "POST",
             headers: {
@@ -123,7 +122,6 @@ async function predictDigit() {
             body: JSON.stringify({ image: dataURL }),
             signal: controller.signal
         });
-        
         clearTimeout(timeoutId);
         // Check if request was successful.
         if (!response.ok) {
@@ -147,7 +145,6 @@ async function predictDigit() {
         }
     } catch (error) {
         console.error("Error during prediction:", error);
-        
         // Display appropriate error message to user.
         const resultElement = document.getElementById('result');
         if (resultElement) {
