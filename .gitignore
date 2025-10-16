@@ -16,10 +16,10 @@ venv/
 env/
 .env
 
-# Model files (large binary files).
-*.h5
+# Model files (large binary files) - COMMENTED OUT FOR DEPLOYMENT
+# *.h5
 *.pkl
-*.model
+# *.model
 
 # Debug and temporary files.
 debug_*.png
