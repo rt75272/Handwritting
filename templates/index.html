@@ -1,17 +1,28 @@
-<!-- templates/index.html -->
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Handwriting Digit Recognition</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Handwriting Recognition</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
-<h2>Draw a digit (0-9)</h2>
-<canvas id="canvas" width="280" height="280" style="border:1px solid #000000;"></canvas>
-<br>
-<button onclick="predictDigit()">Predict</button>
-<button onclick="clearCanvas()">Clear</button>
-<p id="result"></p>
-
-<script src="{{ url_for('static', filename='script.js') }}"></script>
+    <div class="container">
+        <h1>Digit Recognition</h1>
+        <p class="subtitle">Draw a digit (0-9) in the box below</p>
+        
+        <div class="canvas-container">
+            <canvas id="canvas" width="280" height="280"></canvas>
+        </div>
+        
+        <div class="controls">
+            <button id="predictBtn" onclick="predictDigit()">Predict</button>
+            <button id="clearBtn" onclick="clearCanvas()">Clear</button>
+        </div>
+        
+        <div id="result" class="result"></div>
+    </div>
+    
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
 </body>
 </html>
