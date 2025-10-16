@@ -154,8 +154,8 @@ def predict():
         logger.info(f"🎯 Prediction: {predicted_digit} (confidence: {confidence:.3f})")
         
         return jsonify({
-            'digit': predicted_digit,
-            'confidence': confidence,
+            'prediction': predicted_digit,
+            'confidence': f"{confidence * 100:.1f}%",
             'probabilities': probabilities.tolist()
         })
         
