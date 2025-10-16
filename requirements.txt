@@ -7,17 +7,11 @@
 Flask
 
 # Machine learning and neural networks.
-tensorflow
-tensorflow-datasets
 numpy
 scikit-learn
 
 # Image processing.
 Pillow
-scipy
-
-# Data visualization (optional, for debugging and analysis).
-matplotlib
 
 # Production web server (optional, for deployment).
 gunicorn
