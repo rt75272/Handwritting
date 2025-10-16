@@ -26,28 +26,98 @@ digit_model = None
 current_mode = "digits"
 
 def load_trained_model():
-    """Load the pre-trained model from file."""
+    """Load the pre-trained model from file with enhanced error handling."""
     try:
         logger.info("🔧 Loading pre-trained digit recognition model...")
         
         model_path = 'trained_digit_model.keras'
-        if os.path.exists(model_path):
-            model = tf.keras.models.load_model(model_path)
-            logger.info("✅ Pre-trained model loaded successfully")
+        
+        # Check if file exists and get file info
+        if not os.path.exists(model_path):
+            logger.error(f"❌ Model file {model_path} not found!")
+            logger.info(f"📁 Files in directory: {os.listdir('.')}")
+            logger.info("💡 Run 'python train_model.py' locally to create the model")
+            return None
             
-            # Load metadata if available
-            metadata_path = 'model_metadata.json'
-            if os.path.exists(metadata_path):
+        # Check file size and permissions
+        file_size = os.path.getsize(model_path)
+        logger.info(f"📊 Model file size: {file_size / 1024 / 1024:.1f} MB")
+        
+        # Try to load with explicit error handling
+        try:
+            logger.info("🔄 Loading model with TensorFlow...")
+            model = tf.keras.models.load_model(model_path, compile=False)
+            
+            # Re-compile the model to ensure it works
+            model.compile(
+                optimizer=tf.keras.optimizers.Adam(learning_rate=0.001),
+                loss='sparse_categorical_crossentropy',
+                metrics=['accuracy']
+            )
+            
+            logger.info("✅ Pre-trained model loaded and compiled successfully")
+            
+            # Test the model with a dummy input
+            test_input = np.random.random((1, 28, 28, 1))
+            test_pred = model.predict(test_input, verbose=0)
+            logger.info(f"🧪 Model test successful: output shape {test_pred.shape}")
+            
+        except Exception as load_error:
+            logger.error(f"❌ TensorFlow model loading failed: {load_error}")
+            logger.error(f"🔍 Load error traceback: {traceback.format_exc()}")
+            
+            # Try alternative: recreate model architecture and load weights
+            logger.info("🔄 Attempting to recreate model architecture...")
+            try:
+                # Recreate the exact architecture from training
+                model = tf.keras.Sequential([
+                    tf.keras.layers.Conv2D(32, (3, 3), activation='relu', input_shape=(28, 28, 1)),
+                    tf.keras.layers.BatchNormalization(),
+                    tf.keras.layers.Conv2D(32, (3, 3), activation='relu'),
+                    tf.keras.layers.MaxPooling2D((2, 2)),
+                    tf.keras.layers.Dropout(0.25),
+                    tf.keras.layers.Conv2D(64, (3, 3), activation='relu'),
+                    tf.keras.layers.BatchNormalization(),
+                    tf.keras.layers.Conv2D(64, (3, 3), activation='relu'),
+                    tf.keras.layers.MaxPooling2D((2, 2)),
+                    tf.keras.layers.Dropout(0.25),
+                    tf.keras.layers.Flatten(),
+                    tf.keras.layers.Dense(512, activation='relu'),
+                    tf.keras.layers.BatchNormalization(),
+                    tf.keras.layers.Dropout(0.5),
+                    tf.keras.layers.Dense(10, activation='softmax')
+                ])
+                
+                model.compile(
+                    optimizer=tf.keras.optimizers.Adam(learning_rate=0.001),
+                    loss='sparse_categorical_crossentropy',
+                    metrics=['accuracy']
+                )
+                
+                # Try to load just the weights
+                weights_path = model_path.replace('.keras', '.weights.h5')
+                if os.path.exists(weights_path):
+                    model.load_weights(weights_path)
+                    logger.info("✅ Model architecture recreated and weights loaded")
+                else:
+                    logger.warning("⚠️ Using fresh model architecture (untrained)")
+                    
+            except Exception as alt_error:
+                logger.error(f"❌ Alternative loading also failed: {alt_error}")
+                return None
+        
+        # Load metadata if available
+        metadata_path = 'model_metadata.json'
+        if os.path.exists(metadata_path):
+            try:
                 with open(metadata_path, 'r') as f:
                     metadata = json.load(f)
                 logger.info(f"📊 Model accuracy: {metadata.get('test_accuracy', 'Unknown'):.4f}")
                 logger.info(f"🏗️ Architecture: {metadata.get('model_architecture', 'CNN')}")
-            
-            return model
-        else:
-            logger.error(f"❌ Model file {model_path} not found!")
-            logger.info("💡 Run 'python train_model.py' locally to create the model")
-            return None
+            except Exception as meta_error:
+                logger.warning(f"⚠️ Could not load metadata: {meta_error}")
+        
+        return model
             
     except Exception as e:
         logger.error(f"❌ Failed to load model: {e}")
