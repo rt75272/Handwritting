@@ -1,4 +1,4 @@
-/* Modern, centered design for handwriting digit recognition */
+/* Modern, centered design for handwriting digit recognition. */
 * {
 	margin: 0;
 	padding: 0;
@@ -227,7 +227,7 @@ button:active {
 	font-weight: 600;
 }
 
-/* Responsive design */
+/* Responsive design. */
 @media (max-width: 600px) {
 	.container {
 		padding: 2rem;
@@ -264,7 +264,7 @@ button:active {
 	}
 }
 
-/* Loading animation */
+/* Loading animation. */
 .loading-spinner {
 	display: inline-block;
 	width: 20px;
@@ -280,7 +280,7 @@ button:active {
 	to { transform: rotate(360deg); }
 }
 
-/* Fade in animation */
+/* Fade in animation. */
 .container {
 	animation: fadeInUp 0.6s ease-out;
 }
@@ -296,7 +296,7 @@ button:active {
 	}
 }
 
-/* Instructions */
+/* Instructions. */
 .instructions {
 	background: rgba(102, 126, 234, 0.1);
 	border-radius: 10px;

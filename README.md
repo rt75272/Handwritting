@@ -1,16 +1,17 @@
-# MNIST Digit Recognition Web Application
+# Handwriting Digit Recognition Web App
 
-A modern, interactive web application for handwritten digit recognition using a Convolutional Neural Network (CNN) trained on the MNIST dataset. Users can draw digits on an HTML5 canvas and get real-time predictions with confidence scores.
+Ultra-lightweight web application for handwritten digit recognition using scikit-learn. Draw digits on an HTML5 canvas and get real-time predictions with confidence scores.
 
 ## 🚀 Features
 
 - **Interactive Drawing Canvas**: Draw digits with mouse or touch input
-- **Real-time Predictions**: Get instant digit recognition with confidence scores
-- **High Accuracy Model**: CNN trained on MNIST dataset with >99% accuracy
-- **Advanced Image Processing**: Morphological operations for improved recognition
+- **Real-time Predictions**: Get instant digit recognition with confidence scores  
+- **High Accuracy Model**: Enhanced Neural Network with 97.90% accuracy
+- **Ultra-Lightweight**: Uses scikit-learn (5.7MB) instead of TensorFlow (259MB)
+- **Fast Deployment**: Minimal dependencies for reliable cloud deployment
+- **Data Augmentation**: Robust model trained on augmented MNIST dataset
 - **Mobile-Friendly**: Responsive design with touch support
-- **Debug Interface**: Development tools for troubleshooting
-- **Model Retraining**: Easy model retraining with fresh data
+- **Cloud Optimized**: Deployed on Render with gunicorn
 
 ## 🏗️ Architecture
 
