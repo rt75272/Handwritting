@@ -1,0 +1,7 @@
+{
+  "test_accuracy": 0.9883000254631042,
+  "test_loss": 0.03581968694925308,
+  "epochs_trained": 8,
+  "training_samples": 30000,
+  "model_architecture": "Enhanced CNN with BatchNorm and Dropout"
+}
