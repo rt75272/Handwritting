@@ -313,13 +313,12 @@ def initialize_models():
     
     logger.info("✅ Initialization complete")
 
+# Initialize models at module level (for gunicorn compatibility)
+logger.info("🚀 Starting production digit recognition app")
+logger.info("📝 Note: Using pre-trained model for instant deployment")
+initialize_models()
+
 if __name__ == '__main__':
-    # Initialize models
-    initialize_models()
-    
     port = int(os.environ.get('PORT', 5000))
-    logger.info(f"🚀 Starting production digit recognition app on port {port}")
-    logger.info("📝 Note: Using pre-trained model for instant deployment")
-    logger.info("🎯 Ready for accurate predictions!")
-    
+    logger.info(f"🎯 Starting local development server on port {port}")
     app.run(host='0.0.0.0', port=port, debug=False)
