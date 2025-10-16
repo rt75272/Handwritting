@@ -1,1 +1,1 @@
-web: gunicorn app_minimal_working:app --bind 0.0.0.0:$PORT --workers 1 --timeout 120 --preload --access-logfile - --error-logfile -
+web: gunicorn app_simple:app --bind 0.0.0.0:$PORT --workers 1 --timeout 120 --preload --access-logfile - --error-logfile -
