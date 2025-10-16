@@ -195,9 +195,10 @@ def predict():
     """Predict digit from canvas drawing."""
     global digit_model
     
-    logger.info("🔍 Prediction request received")
+    logger.info("🎯 Prediction request received")
     
     try:
+        # Check model availability first
         if digit_model is None:
             logger.error("❌ No trained model available")
             return jsonify({
@@ -205,31 +206,61 @@ def predict():
                 'suggestion': 'Model failed to load during startup'
             }), 500
         
-        # Get image data from request
+        logger.info("✅ Model is available")
+        
+        # Get and validate request data
         data = request.get_json()
-        if not data or 'image' not in data:
+        if not data:
+            logger.error("❌ No JSON data in request")
+            return jsonify({'error': 'No JSON data provided'}), 400
+            
+        if 'image' not in data:
+            logger.error("❌ No image field in JSON data")
             return jsonify({'error': 'No image data provided'}), 400
         
-        # Preprocess image
-        logger.info("🔄 Making prediction...")
-        image_array = enhanced_preprocess(data['image'])
+        logger.info("✅ Image data received, processing...")
         
-        # Make prediction
-        predictions = digit_model.predict(image_array, verbose=0)
-        predicted_class = int(np.argmax(predictions[0]))
-        confidence = float(predictions[0][predicted_class]) * 100
+        # Preprocess image with error handling
+        try:
+            image_array = enhanced_preprocess(data['image'])
+            if image_array is None:
+                logger.error("❌ Image preprocessing returned None")
+                return jsonify({'error': 'Failed to process image'}), 400
+            logger.info(f"✅ Image preprocessed: shape {image_array.shape}")
+        except Exception as preprocess_error:
+            logger.error(f"❌ Preprocessing error: {preprocess_error}")
+            return jsonify({'error': f'Preprocessing failed: {str(preprocess_error)}'}), 400
+        
+        # Make prediction with error handling
+        try:
+            logger.info("🔄 Making model prediction...")
+            predictions = digit_model.predict(image_array, verbose=0)
+            logger.info(f"✅ Prediction complete: shape {predictions.shape}")
+            
+            predicted_class = int(np.argmax(predictions[0]))
+            confidence = float(predictions[0][predicted_class]) * 100
+            
+            logger.info(f"🎯 Predicted digit: {predicted_class} with confidence {confidence:.1f}%")
+            
+        except Exception as prediction_error:
+            logger.error(f"❌ Model prediction error: {prediction_error}")
+            return jsonify({'error': f'Model prediction failed: {str(prediction_error)}'}), 500
         
         # Get top 3 predictions
-        top_3_indices = np.argsort(predictions[0])[-3:][::-1]
-        top_3 = [
-            {
-                'digit': int(idx),
-                'confidence': f"{predictions[0][idx] * 100:.1f}%"
-            }
-            for idx in top_3_indices
-        ]
+        try:
+            top_3_indices = np.argsort(predictions[0])[-3:][::-1]
+            top_3 = [
+                {
+                    'digit': int(idx),
+                    'confidence': f"{predictions[0][idx] * 100:.1f}%"
+                }
+                for idx in top_3_indices
+            ]
+        except Exception as top3_error:
+            logger.warning(f"⚠️ Top-3 calculation failed: {top3_error}")
+            top_3 = []
         
-        logger.info(f"✅ Prediction: {predicted_class} ({confidence:.1f}%)")
+        logger.info(f"✅ Prediction successful: {predicted_class} ({confidence:.1f}%)")
         
         return jsonify({
             'prediction': predicted_class,
@@ -248,15 +279,29 @@ def predict():
 
 @app.route('/health')
 def health():
-    """Health check endpoint with model status."""
+    """Health check endpoint."""
     return jsonify({
-        'status': 'healthy' if digit_model is not None else 'unhealthy',
-        'models': {
-            'digit_model': digit_model is not None
-        },
-        'current_mode': current_mode,
-        'production_ready': True
+        'status': 'healthy',
+        'model_loaded': digit_model is not None,
+        'mode': current_mode
     })
+
+@app.route('/api/test', methods=['POST'])
+def test_api():
+    """Simple test endpoint to verify API is working."""
+    logger.info("🧪 Test API endpoint called")
+    try:
+        data = request.get_json()
+        logger.info(f"📨 Received test data: {data}")
+        return jsonify({
+            'status': 'success',
+            'message': 'API is working correctly',
+            'received_data': data,
+            'model_available': digit_model is not None
+        })
+    except Exception as e:
+        logger.error(f"❌ Test endpoint error: {e}")
+        return jsonify({'error': str(e)}), 500
 
 @app.route('/debug')
 def debug():

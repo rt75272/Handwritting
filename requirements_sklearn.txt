@@ -1,0 +1,6 @@
+# Ultra-lightweight requirements for scikit-learn deployment
+Flask==3.1.2
+gunicorn==23.0.0
+Pillow==12.0.0
+numpy==2.3.4
+scikit-learn==1.6.0

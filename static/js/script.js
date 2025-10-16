@@ -111,14 +111,20 @@ async function predictDigit() {
         // Convert canvas to base64 data URL.
         const dataURL = canvas.toDataURL('image/png');
         console.log(`Captured canvas image, data URL length: ${dataURL.length}`);
-        // Send prediction request to server.
+        // Send prediction request to server with timeout.
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout
+        
         const response = await fetch("/predict", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify({ image: dataURL })
+            body: JSON.stringify({ image: dataURL }),
+            signal: controller.signal
         });
+        
+        clearTimeout(timeoutId);
         // Check if request was successful.
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
@@ -141,10 +147,17 @@ async function predictDigit() {
         }
     } catch (error) {
         console.error("Error during prediction:", error);
-        // Display error message to user.
+        
+        // Display appropriate error message to user.
         const resultElement = document.getElementById('result');
         if (resultElement) {
-            resultElement.innerText = `Error: ${error.message}`;
+            if (error.name === 'AbortError') {
+                resultElement.innerText = "Error: Request timed out (30 seconds). Please try again.";
+            } else if (error.message.includes('Failed to fetch')) {
+                resultElement.innerText = "Error: Network connection failed. Please check your internet connection.";
+            } else {
+                resultElement.innerText = `Error: ${error.message}`;
+            }
         }
     }
 }
