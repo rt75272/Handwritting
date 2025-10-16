@@ -1,0 +1,6 @@
+{
+  "model_type": "Neural Network",
+  "test_accuracy": 0.9769,
+  "features": 784,
+  "classes": 10
+}

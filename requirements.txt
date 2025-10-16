@@ -10,6 +10,7 @@ Flask
 tensorflow
 tensorflow-datasets
 numpy
+scikit-learn
 
 # Image processing.
 Pillow
