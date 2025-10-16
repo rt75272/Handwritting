@@ -1,7 +1,0 @@
-# Emergency minimal requirements - guaranteed to work
-Flask
-gunicorn
-tensorflow-cpu
-Pillow
-numpy
-h5py

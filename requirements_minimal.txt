@@ -1,9 +1,0 @@
-# Ultra-minimal requirements for Render deployment
-# Python 3.13 compatible with guaranteed pre-built wheels
-
-Flask>=3.0.0
-gunicorn>=22.0.0
-tensorflow-cpu
-Pillow>=10.0.0
-numpy>=1.26.0,<2.0.0
-h5py>=3.10.0
